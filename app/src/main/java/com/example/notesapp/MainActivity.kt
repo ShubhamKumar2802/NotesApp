@@ -22,6 +22,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate: started")
 
         noteViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
-        noteViewModel.notesList.observe(this, Observer {  })
+//        noteViewModel.notesList.observe(this, Observer {  })
     }
 }
