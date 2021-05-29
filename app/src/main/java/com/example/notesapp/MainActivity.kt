@@ -3,25 +3,29 @@ package com.example.notesapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.notesapp.databinding.ActivityMainBinding
-import com.example.notesapp.viewModel.NotesViewModel
 
-private val TAG = "MainActivity"
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
-    lateinit var noteViewModel: NotesViewModel
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d(TAG, "onCreate: started")
 
-        noteViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
-//        noteViewModel.notesList.observe(this, Observer {  })
+        //navController
+        setupActionBarWithNavController(findNavController(R.id.fragmentContainerHome))
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.fragmentContainerHome)
+        return navController.navigateUp()
     }
 }

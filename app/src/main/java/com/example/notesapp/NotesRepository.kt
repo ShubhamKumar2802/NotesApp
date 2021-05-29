@@ -1,4 +1,4 @@
- package com.example.notesapp
+package com.example.notesapp
 
 import androidx.lifecycle.LiveData
 import com.example.notesapp.database.Note

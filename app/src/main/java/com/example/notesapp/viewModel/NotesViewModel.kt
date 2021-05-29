@@ -1,6 +1,7 @@
 package com.example.notesapp.viewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -10,9 +11,11 @@ import com.example.notesapp.database.NoteDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+private const val TAG = "NotesViewModel"
+
 class NotesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val notesList: LiveData<List<Note>>
+    val notesList: LiveData<List<Note>>
     private val notesRepository: NotesRepository
 
 
@@ -25,12 +28,14 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
     fun insertNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.insertNote(note)
+            Log.d(TAG, "Note Added: ID:${note.ID}; Content:${note.noteText}")
         }
     }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.deleteNote(note)
+            Log.d(TAG, "Note deleted: $note")
         }
     }
 
