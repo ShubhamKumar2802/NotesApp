@@ -31,7 +31,7 @@ class NewNoteFragment : Fragment() {
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
 
         newNoteBinding.buttonConfirmNote.setOnClickListener {
-            val noteContent = newNoteBinding.etNoteContent.toString()
+            val noteContent = newNoteBinding.etNoteContent.text.toString()
             if (noteContent.isNotBlank()) {
                 Log.d(TAG, "buttonConfirmNote: New note: $noteContent")
                 val newNote = Note(0, noteContent)
