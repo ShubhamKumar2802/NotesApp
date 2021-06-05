@@ -68,6 +68,9 @@ dependencies {
     //Fragments
     implementation "androidx.fragment:fragment-ktx:$rootProject.fragment_version"
 
+    //Editor
+    implementation "com.github.bxute:MarkDEditor:$rootProject.markd_editor_version"
+
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
