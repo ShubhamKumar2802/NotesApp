@@ -7,44 +7,44 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.notesapp.databinding.FragmentNewNoteBinding
+import androidx.navigation.fragment.navArgs
+import com.example.notesapp.databinding.FragmentEditNoteBinding
 import com.example.notesapp.viewModel.NotesViewModel
 import xute.markdeditor.EditorControlBar
 import xute.markdeditor.MarkDEditor
-import xute.markdeditor.Styles.TextComponentStyle.H1
+import xute.markdeditor.Styles.TextComponentStyle
 
-private const val TAG = "NewNoteFragment"
+class EditNoteFragment : Fragment() {
 
-class NewNoteFragment : Fragment() {
-
+    private val args by navArgs<EditNoteFragmentArgs>()
+    private lateinit var binding: FragmentEditNoteBinding
     private lateinit var notesViewModel: NotesViewModel
-    private lateinit var binding: FragmentNewNoteBinding
+    private val TAG = "EditNoteFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewNoteBinding.inflate(inflater, container, false)
+        binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         Log.d(TAG, "onCreateView: started")
 
         // ViewModel
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
 
         // Configure the Editor
-        val editor: MarkDEditor = binding.noteTextEditor
-        val editorControlBar: EditorControlBar = binding.editorControlBar
+        val editor: MarkDEditor = binding.noteEditNoteFragTextEditor
+        val editorControlBar: EditorControlBar = binding.editNoteFragControlBar
 
         editorControlBar.setEditorControlListener(notesViewModel.editorControlListener)
+//        val newEditor = MarkDEditor(this.requireContext(), null)
         editor.configureEditor(
             "",               //server url for image upload
             "",            //serverToken
-            true,              // isDraft: set true when you are loading draft(fresh editor window)
-            "Type here...",  //default hint of input box
-            H1
+            false,             // isDraft: set true when you are loading draft(fresh editor window)
+            null,  //default hint of input box
+            TextComponentStyle.H1
         )
-        editor.loadDraft(notesViewModel.getEditorDraftContent())
         editorControlBar.setEditor(editor)
-
         return binding.root
     }
 }

@@ -6,33 +6,32 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/ivNoteBanner"
+        android:id="@+id/ivEditNoteFragNoteBanner"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:backgroundTint="@color/cardview_dark_background"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/ivRoundedSquareShape"
+        app:layout_constraintBottom_toBottomOf="@+id/ivEditNoteFragRoundedSquareShape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
-        app:srcCompat="@drawable/ic_launcher_background"
-        tools:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@color/purple_700"
+        tools:srcCompat="@color/purple_700" />
 
     <ImageView
-        android:id="@+id/ivBottomShadow"
+        android:id="@+id/ivEditNoteFragBottomShadow"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:src="@drawable/note_banner_image_gradient"
-        app:layout_constraintBottom_toBottomOf="@+id/ivRoundedSquareShape"
+        app:layout_constraintBottom_toBottomOf="@+id/ivEditNoteFragRoundedSquareShape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvNoteBannerImageCredits"
+        android:id="@+id/tvEditNoteFragBannerImageCredits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
@@ -40,23 +39,24 @@
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/ivNoteBanner"
+        app:layout_constraintBottom_toBottomOf="@+id/ivEditNoteFragNoteBanner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <ImageView
-        android:id="@+id/ivRoundedSquareShape"
+        android:id="@+id/ivEditNoteFragRoundedSquareShape"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/rv_card_shape"
-        app:layout_constraintBottom_toTopOf="@+id/materialCardNoteText"
+        app:layout_constraintBottom_toTopOf="@+id/materialCardEditNoteFragNoteText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardNoteText"
+        android:id="@+id/materialCardEditNoteFragNoteText"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,12 +79,12 @@
             <!--                app:layout_constraintStart_toStartOf="parent"-->
             <!--                app:layout_constraintTop_toTopOf="parent" />-->
             <ScrollView
-                android:id="@+id/controlBar"
+                android:id="@+id/editNoteFragScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
                 android:overScrollMode="always"
-                app:layout_constraintBottom_toTopOf="@+id/editorControlBar"
+                app:layout_constraintBottom_toTopOf="@+id/editNoteFragControlBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,14 +92,14 @@
 
                 <!-- TODO("Fix keyboard overlay issue")-->
                 <xute.markdeditor.MarkDEditor
-                    android:id="@+id/noteTextEditor"
+                    android:id="@+id/noteEditNoteFragTextEditor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </ScrollView>
 
             <xute.markdeditor.EditorControlBar
-                android:id="@+id/editorControlBar"
+                android:id="@+id/editNoteFragControlBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -109,12 +109,12 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonConfirmNote"
+                android:id="@+id/buttonEditConfirmNote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="done"
                 app:cornerRadius="16dp"
-                app:layout_constraintBottom_toTopOf="@+id/editorControlBar"
+                app:layout_constraintBottom_toTopOf="@+id/editNoteFragControlBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent" />

@@ -7,10 +7,14 @@
     tools:context=".MainActivity">
 
     <fragment
+        tools:layout="@layout/horizontal_rv_card_layout"
+        android:elevation="16dp"
         android:id="@+id/fragmentContainerHome"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="32dp"
+        app:flow_firstHorizontalStyle="packed"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

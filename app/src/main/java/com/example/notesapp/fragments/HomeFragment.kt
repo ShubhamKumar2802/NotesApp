@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notesapp.R
 import com.example.notesapp.databinding.FragmentHomeBinding
-import com.example.notesapp.fragments.horizontalRecyclerView.notesHorizontalAdapter
+import com.example.notesapp.fragments.horizontalRecyclerView.NotesHorizontalAdapter
 import com.example.notesapp.viewModel.NotesViewModel
 
 private const val TAG = "HomeFragment"
@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
         }
 
         // Horizontal RecyclerView
-        val horizontalRecyclerViewAdapter = notesHorizontalAdapter()
+        val horizontalRecyclerViewAdapter = NotesHorizontalAdapter()
         val rvHorizontal = homeFragmentBinding.rvNotesHorizontal
         rvHorizontal.adapter = horizontalRecyclerViewAdapter
         rvHorizontal.layoutManager =

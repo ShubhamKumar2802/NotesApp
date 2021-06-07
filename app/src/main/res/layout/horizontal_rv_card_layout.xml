@@ -2,10 +2,12 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvNotePreview"
     android:layout_width="match_parent"
-    android:layout_margin="16dp"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     android:elevation="8dp"
+    android:padding="16dp"
     app:cardCornerRadius="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,49 +17,67 @@
         <ImageView
             android:id="@+id/iv_note_banner_image"
             android:layout_width="match_parent"
-            android:src="@drawable/ic_image_not_loaded"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_rv_card_shape"
+            app:layout_constraintBottom_toTopOf="@+id/cv_note_horizontal_rv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            app:srcCompat="@drawable/ic_launcher_background"
+            tools:srcCompat="@drawable/ic_launcher_background" />
+
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_rv_card_shape"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/rv_card_shape"
-            app:layout_constraintBottom_toTopOf="@+id/tv_note_title"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_note_banner_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_note_title"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_note_horizontal_rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tv_note_contents"
-            tools:layout_editor_absoluteX="0dp"
-            tools:text="Note Title goes here" />
-
-        <TextView
-            android:id="@+id/tv_note_contents"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non quam tristique dui viverra porttitor cursus vitae eros. Aenean dictum dapibus dolor in sollicitudin. Donec magna urna, finibus et vestibulum et, convallis eget turpis. Suspendisse eu rutrum lacus. Nam sit amet porta tortor, at rhoncus dolor. Sed sollicitudin sem ac urna euismod pretium. Vestibulum eget elementum est. Etiam porttitor, magna sit amet tincidunt rutrum, ligula odio elementum risus, ut vehicula erat ipsum ac sem.
+            app:layout_constraintTop_toBottomOf="@+id/iv_rv_card_shape">
 
-Etiam lobortis, ex at pellentesque sagittis, purus mauris hendrerit mauris, id laoreet dolor mi eget mauris. Suspendisse mollis mattis tellus at facilisis. Pellentesque magna mauris, blandit vel velit at, rhoncus tempus enim. Mauris semper ullamcorper orci, eu sagittis libero ornare a. Morbi rhoncus mollis feugiat. Quisque efficitur quam non leo lobortis vulputate. Nullam id suscipit felis. Cras ipsum risus, tristique a tempus ut, tempus nec metus. Vestibulum elementum tempor facilisis. Cras turpis lectus, feugiat congue finibus quis, mattis sed sapien. Etiam porta, diam nec venenatis euismod, arcu lorem pulvinar leo, ut dapibus nunc quam nec nibh." />
+            <xute.markdeditor.MarkDEditor
+                android:id="@+id/editor_horizontal_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_note_title"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="16dp"-->
+        <!--            android:textSize="20sp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            app:layout_constraintBottom_toTopOf="@+id/tv_note_contents"-->
+        <!--            tools:layout_editor_absoluteX="0dp"-->
+        <!--            tools:text="Note Title goes here" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_note_contents"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="16dp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0.5"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non quam tristique dui viverra porttitor cursus vitae eros. Aenean dictum dapibus dolor in sollicitudin. Donec magna urna, finibus et vestibulum et, convallis eget turpis. Suspendisse eu rutrum lacus. Nam sit amet porta tortor, at rhoncus dolor. Sed sollicitudin sem ac urna euismod pretium. Vestibulum eget elementum est. Etiam porttitor, magna sit amet tincidunt rutrum, ligula odio elementum risus, ut vehicula erat ipsum ac sem.-->
+
+        <!--Etiam lobortis, ex at pellentesque sagittis, purus mauris hendrerit mauris, id laoreet dolor mi eget mauris. Suspendisse mollis mattis tellus at facilisis. Pellentesque magna mauris, blandit vel velit at, rhoncus tempus enim. Mauris semper ullamcorper orci, eu sagittis libero ornare a. Morbi rhoncus mollis feugiat. Quisque efficitur quam non leo lobortis vulputate. Nullam id suscipit felis. Cras ipsum risus, tristique a tempus ut, tempus nec metus. Vestibulum elementum tempor facilisis. Cras turpis lectus, feugiat congue finibus quis, mattis sed sapien. Etiam porta, diam nec venenatis euismod, arcu lorem pulvinar leo, ut dapibus nunc quam nec nibh." />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

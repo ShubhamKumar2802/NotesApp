@@ -10,6 +10,7 @@ import com.example.notesapp.database.Note
 import com.example.notesapp.database.NoteDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import xute.markdeditor.EditorControlBar
 import xute.markdeditor.Styles.TextComponentStyle.H1
 import xute.markdeditor.components.TextComponentItem.MODE_PLAIN
 import xute.markdeditor.datatype.DraftDataItemModel
@@ -21,8 +22,7 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
 
     val notesList: LiveData<List<Note>>
     private val notesRepository: NotesRepository
-
-
+    var editorControlListener: EditorControlBar.EditorControlListener = EditorControlBarListener()
     init {
         val notesDao = NoteDatabase.getNoteDatabase(application).getNoteDao()
         notesRepository = NotesRepository(notesDao)
@@ -57,8 +57,13 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         return DraftModel(contentType)
     }
 
-    @Override
-    fun onInsertImageClicked() {
-        //TODO "Add options to insert an image from local storage and from Unsplash"
+    inner class EditorControlBarListener : EditorControlBar.EditorControlListener {
+        override fun onInsertImageClicked() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onInserLinkClicked() {
+            TODO("Not yet implemented")
+        }
     }
 }
