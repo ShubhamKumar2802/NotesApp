@@ -17,9 +17,9 @@
         <ImageView
             android:id="@+id/iv_note_banner_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/cv_note_horizontal_rv"
+            app:layout_constraintBottom_toTopOf="@id/horizontal_guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,8 +41,8 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_note_horizontal_rv"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +54,13 @@
                 android:layout_height="match_parent" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
 
         <!--        <TextView-->
         <!--            android:id="@+id/tv_note_title"-->
