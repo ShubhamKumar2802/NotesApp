@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
 
         //navController
         setupActionBarWithNavController(findNavController(R.id.fragmentContainerHome))
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -15,26 +15,30 @@ import com.example.notesapp.databinding.FragmentHomeBinding
 import com.example.notesapp.fragments.horizontalRecyclerView.NotesHorizontalAdapter
 import com.example.notesapp.viewModel.NotesViewModel
 
+
 private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
 
     private lateinit var notesViewModel: NotesViewModel
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val homeFragmentBinding = FragmentHomeBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         Log.d(TAG, "onCreateView: started")
 
-        homeFragmentBinding.buttonAddNote.setOnClickListener {
+        binding.buttonAddNote.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_newNoteFragment)
         }
 
+        binding.tvHomePageGreeting.setText(R.string.home_fragment_welcome_message)
+
         // Horizontal RecyclerView
         val horizontalRecyclerViewAdapter = NotesHorizontalAdapter()
-        val rvHorizontal = homeFragmentBinding.rvNotesHorizontal
+        val rvHorizontal = binding.rvNotesHorizontal
         rvHorizontal.adapter = horizontalRecyclerViewAdapter
         rvHorizontal.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -45,7 +49,17 @@ class HomeFragment : Fragment() {
             horizontalRecyclerViewAdapter.setData(it)
         })
 
-        return homeFragmentBinding.root
+        // setting custom background color
+//        val homeFragmentBackground: GradientDrawable? = binding.ivBackgroundGradient.background as GradientDrawable?
+//        homeFragmentBackground.setColor(Color.GREEN)
+        return binding.root
     }
 
+//    fun Drawable.overrideColor(@ColorInt colorInt: Int) {
+//        when (this) {
+//            is GradientDrawable -> setColor(colorInt)
+//            is ShapeDrawable -> paint.color = colorInt
+//            is ColorDrawable -> color = colorInt
+//        }
+//    }
 }

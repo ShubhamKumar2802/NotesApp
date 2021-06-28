@@ -38,13 +38,18 @@ class EditNoteFragment : Fragment() {
         editorControlBar.setEditorControlListener(notesViewModel.editorControlListener)
 //        val newEditor = MarkDEditor(this.requireContext(), null)
         editor.configureEditor(
-            "",               //server url for image upload
-            "",            //serverToken
-            false,             // isDraft: set true when you are loading draft(fresh editor window)
-            null,  //default hint of input box
-            TextComponentStyle.H1
+            null,               //server url for image upload
+            null,            //serverToken
+            true,             //isDraft: set true when you are loading draft(fresh editor window)
+            null,           //default hint of input box
+            TextComponentStyle.NORMAL
         )
+        editor.loadDraft(notesViewModel.getDraftFromDatabase(args.selectedNote.noteDraftModel?.draftID))
+        Log.d(TAG, "loaded draft with ID ${args.selectedNote.noteDraftModel?.draftID}")
         editorControlBar.setEditor(editor)
+        val draftLength = editor.draft.items.size
+        val draftID = editor.draft.draftId
+        editor.loadDraft(notesViewModel.getDraftFromDatabase(draftID))
         return binding.root
     }
 }
