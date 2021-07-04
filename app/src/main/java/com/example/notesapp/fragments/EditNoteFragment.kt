@@ -10,9 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.notesapp.databinding.FragmentEditNoteBinding
 import com.example.notesapp.viewModel.NotesViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import xute.markdeditor.EditorControlBar
 import xute.markdeditor.MarkDEditor
-import xute.markdeditor.Styles.TextComponentStyle
+import xute.markdeditor.Styles.TextComponentStyle.H1
 
 class EditNoteFragment : Fragment() {
 
@@ -35,21 +38,30 @@ class EditNoteFragment : Fragment() {
         val editor: MarkDEditor = binding.noteEditNoteFragTextEditor
         val editorControlBar: EditorControlBar = binding.editNoteFragControlBar
 
+        GlobalScope.launch(Dispatchers.Main) {
+            val currentNoteDraft =
+                notesViewModel.getDraftContentForEditor(args.selectedNote.note.ID)
+            editor.loadDraft(currentNoteDraft)
+        }
+
+//        Log.d(
+//            TAG, """
+//            onCreateView:
+//            currentNoteDraft size: ${(currentNoteDraft as DraftModel).items.size}
+//        """.trimIndent()
+//        )
+
         editorControlBar.setEditorControlListener(notesViewModel.editorControlListener)
-//        val newEditor = MarkDEditor(this.requireContext(), null)
         editor.configureEditor(
-            null,               //server url for image upload
-            null,            //serverToken
+            "",               //server url for image upload
+            "",            //serverToken
             true,             //isDraft: set true when you are loading draft(fresh editor window)
-            null,           //default hint of input box
-            TextComponentStyle.NORMAL
+            "Edit note here",           //default hint of input box
+            H1
         )
-        editor.loadDraft(notesViewModel.getDraftFromDatabase(args.selectedNote.noteDraftModel?.draftID))
-        Log.d(TAG, "loaded draft with ID ${args.selectedNote.noteDraftModel?.draftID}")
+
+        Log.d(TAG, "Editor loaded with draft: ${editor.draft}")
         editorControlBar.setEditor(editor)
-        val draftLength = editor.draft.items.size
-        val draftID = editor.draft.draftId
-        editor.loadDraft(notesViewModel.getDraftFromDatabase(draftID))
         return binding.root
     }
 }

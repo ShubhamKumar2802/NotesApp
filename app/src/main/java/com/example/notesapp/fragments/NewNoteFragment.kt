@@ -9,9 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.notesapp.R
+import com.example.notesapp.database.entities.DraftModel
 import com.example.notesapp.database.entities.Note
-import com.example.notesapp.database.entities.NoteDraftDataItem
-import com.example.notesapp.database.entities.NoteDraftModel
 import com.example.notesapp.databinding.FragmentNewNoteBinding
 import com.example.notesapp.viewModel.NotesViewModel
 import xute.markdeditor.EditorControlBar
@@ -45,43 +44,62 @@ class NewNoteFragment : Fragment() {
         editor.configureEditor(
             "",               //server url for image upload
             "",            //serverToken
-            true,              //isDraft: set true when you are loading draft(fresh editor window)
+            false,              //isDraft: set true when you are loading draft(fresh editor window)
             "Type here...",  //default hint of input box
-            H1
+            H1                       //default heading type
         )
-        editor.loadDraft(notesViewModel.getEditorDraftContent())
+
         editorControlBar.setEditor(editor)
 
         binding.buttonConfirmNote.setOnClickListener {
-            // editor content in plain text form
-            val noteContent = editor.markdownContent
-            // editor content in DraftModel form
-            val draftContent = DraftManager().processDraftContent(editor)
-            // editor content in DraftDataItemModel form
-            val draftDataModelItems: ArrayList<DraftDataItemModel> = draftContent.items
-
-            if (draftDataModelItems.isNotEmpty()) {
-                Log.d(TAG, "buttonConfirmNote: New note: $noteContent")
-                val newNote = Note(0, noteContent, null)
-                val newDraftContent = NoteDraftModel(0, newNote.ID)
-
-                draftDataModelItems.forEach {
-                    val newDraftDataItem = NoteDraftDataItem(
-                        0,
-                        newDraftContent.draftID,
-                        it.itemType,
-                        it.mode,
-                        it.style,
-                        it.content,
-                        it.downloadUrl,
-                        it.caption
-                    )
-                    notesViewModel.insertDraftDataItem(newDraftDataItem)
-                }
-                notesViewModel.insertNote(newNote, newDraftContent)
-                findNavController().navigate(R.id.action_newNoteFragment_to_homeFragment)
-            }
+            val noteText = editor.markdownContent
+            val draftDataItemsList = DraftManager().processDraftContent(editor).items
+            Log.d(TAG, "onCreateView: draftContentItems: $draftDataItemsList")
+            saveNote(
+                noteText = noteText,
+                bannerImageURL = null,
+                draftDataItemsList = draftDataItemsList
+            )
+            findNavController().navigate(R.id.action_newNoteFragment_to_homeFragment)
         }
         return binding.root
+    }
+
+    private fun saveNote(
+        noteText: String,
+        bannerImageURL: String?,
+        draftDataItemsList: ArrayList<DraftDataItemModel>
+    ) {
+        if (noteText.isNotEmpty()) {
+            val newNote = Note(
+                ID = 0,
+                noteText = noteText,
+                noteImageBannerURL = bannerImageURL
+            )
+            notesViewModel.addNewNote(newNote)
+
+            // get the ID for the current note that was just saved in notes_table
+            var newNoteId: Long? = null
+            try {
+                newNoteId = notesViewModel.getNoteIdUsingNoteText(noteText)
+                Log.d(TAG, "saveNote: newNoteID received from DB with ID = $newNoteId")
+            } catch (exception: Exception) {
+                Log.d(TAG, "saveNote: $exception")
+            }
+
+            draftDataItemsList.forEach {
+                val newDraftModelItem = DraftModel(
+                    draftID = 0,
+                    ID = newNoteId,
+                    itemType = it.itemType,
+                    mode = it.mode,
+                    style = it.style,
+                    content = it.content,
+                    imageDownloadURL = it.downloadUrl,
+                    imageCaption = it.caption
+                )
+                notesViewModel.addDraftModel(newDraftModelItem)
+            }
+        }
     }
 }

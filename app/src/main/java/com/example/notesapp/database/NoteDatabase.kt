@@ -4,19 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.notesapp.database.entities.DraftModel
 import com.example.notesapp.database.entities.Note
-import com.example.notesapp.database.entities.NoteDraftDataItem
-import com.example.notesapp.database.entities.NoteDraftModel
 
-//    entities = [
-//        Note::class,
-//    DraftModel::class
-//    ],
 @Database(
     entities = [
         Note::class,
-        NoteDraftModel::class,
-        NoteDraftDataItem::class],
+        DraftModel::class
+    ],
     version = 1,
     exportSchema = false
 )

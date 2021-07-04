@@ -9,9 +9,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity
 data class DraftModel(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     val draftID: Long,
-    val ID: Int,    // Used for NoteWithDraftModel relation
+    val ID: Long?,    // Used for NoteWithDraftModel relation
     val itemType: Int,
     val mode: Int,
     val style: Int,

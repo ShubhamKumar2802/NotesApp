@@ -34,6 +34,6 @@
             app:destination="@id/homeFragment" />
         <argument
             android:name="selectedNote"
-            app:argType="com.example.notesapp.database.entities.entityRelations.NoteAndNoteDraftModel" />
+            app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
     </fragment>
 </navigation>

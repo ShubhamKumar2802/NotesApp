@@ -8,12 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.notesapp.NotesRepository
 import com.example.notesapp.database.NoteDatabase
 import com.example.notesapp.database.entities.Note
-import com.example.notesapp.database.entities.NoteDraftDataItem
-import com.example.notesapp.database.entities.NoteDraftModel
-import com.example.notesapp.database.entities.entityRelations.NoteAndNoteDraftModel
-import com.example.notesapp.database.entities.entityRelations.NoteDraftModelWithNoteDraftDataItem
+import com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import xute.markdeditor.EditorControlBar
 import xute.markdeditor.Styles.TextComponentStyle.H1
 import xute.markdeditor.components.TextComponentItem.MODE_PLAIN
@@ -24,30 +22,33 @@ private const val TAG = "NotesViewModel"
 
 class NotesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val notesList: LiveData<List<NoteAndNoteDraftModel>>
+    private var notesList: LiveData<List<NoteWithDraftModel>>
     private val notesRepository: NotesRepository
     var editorControlListener: EditorControlBar.EditorControlListener = EditorControlBarListener()
 
     init {
         val notesDao = NoteDatabase.getNoteDatabase(application).getNoteDao()
         notesRepository = NotesRepository(notesDao)
-        notesList = notesRepository.getNotesList
+        notesList = notesRepository.allNotesList
     }
 
-    fun insertNote(note: Note, draftModel: NoteDraftModel) {
+    fun addNewNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
-            with(notesRepository) {
-                insertNote(note)
-                insertNoteDraftModel(draftModel)
-            }
+            notesRepository.addNote(note)
             Log.d(TAG, "Note Added: ID:${note.ID}; Content:${note.noteText}")
         }
     }
 
-    fun insertDraftDataItem(draftDataItem: NoteDraftDataItem) {
+    fun addDraftModel(draftModel: com.example.notesapp.database.entities.DraftModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            notesRepository.insertNoteDraftDataItem(draftDataItem)
+            notesRepository.addDraftModel(draftModel)
         }
+        Log.d(
+            TAG, """
+            addDraftModel: new draftModel added with
+            ID = ${draftModel.ID}
+        """.trimIndent()
+        )
     }
 
     fun deleteNote(note: Note) {
@@ -57,132 +58,123 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getAllNotes(): LiveData<List<NoteAndNoteDraftModel>> {
-        return notesRepository.getNotesList
+    fun getAllNotes(): LiveData<List<NoteWithDraftModel>> {
+        return notesRepository.allNotesList
     }
 
-//    fun getAllDrafts(): LiveData<List<NoteDraftModelWithNoteDraftDataItem>> {
-//        return notesRepository.getDraftModelList
-//    }
+    fun getNoteIdUsingNoteText(noteText: String): Long {
+        return runBlocking {
+            notesRepository.getNoteIdUsingNoteText(noteText)
+        }
+    }
 
-    // TODO ("Method to get DraftModel from Database")
-//    fun getDraftFromDatabase(draftID: Long): DraftModel {
-//        val draftContent = ArrayList<DraftDataItemModel>()
-//
-//        val draftDataItemList: List<NoteDraftModelWithNoteDraftDataItem> =
-//            notesRepository.getNoteDraftModelAndNoteDraftDataItem(draftID)
-//
-//        // traverse through the draftItemList and create a DraftDataItemModel and set its properties
-//        draftDataItemList.forEach {
-////            if (it.noteDraftModel.draftID == draftID) {
-//            it.draftDataItem.forEach { dataItem ->
-//                val newDraftDataItem = DraftDataItemModel().apply {
-//                    this.itemType = dataItem.itemType
-//                    this.mode = dataItem.mode
-//                    this.style = dataItem.style
-//                    this.content = dataItem.content
-//                    this.downloadUrl = dataItem.imageDownloadURL
-//                    this.caption = dataItem.imageCaption
-//                }
-//                draftContent.add(newDraftDataItem)
+    /*
+    -- noteDraftModel: size = 1
+    -- noteDraftModel.draftModel: size = number of draftModel items retrieved from database
+     */
+//    fun getDraftModel(id: Long): DraftModel {
+//        val draftContentList = ArrayList<DraftDataItemModel>()
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val noteAndDraftModel: List<NoteWithDraftModel> =
+//                notesRepository.getNoteWithDraftModelUsingId(id)
+//            Log.d(
+//                TAG, """getDraftModel:
+//                note ID = $id
+//                noteAndDraftModel received from database with size = ${noteAndDraftModel.size}
+//                number of draftDataItems received = ${noteAndDraftModel.first().draftModel.size}
+//            """.trimIndent()
+//            )
+//            if (noteAndDraftModel.isEmpty()) {
+//                Log.d(TAG, "getDraftModel: noteAndDraftModel list Empty!")
 //            }
-////                val newDraftDataItem = DraftDataItemModel().apply {
-////                    this.itemType = it.draftDataItem.first().itemType
-////                    this.mode = it.draftDataItem.first().mode
-////                    this.style = it.draftDataItem.first().style
-////                    this.content = it.draftDataItem.first().content
-////                    this.downloadUrl = it.draftDataItem.first().imageDownloadURL
-////                    this.caption = it.draftDataItem.first().imageCaption
-////                }
-////                draftContent.add(newDraftDataItem)
-////            }
+//            with(noteAndDraftModel.first()) {
+//                this.draftModel.forEach { draftModelItem ->
+//                    val newDraftDataItem = DraftDataItemModel().apply {
+//                        this.itemType = draftModelItem.itemType
+//                        this.mode = draftModelItem.mode
+//                        this.style = draftModelItem.style
+//                        this.content = draftModelItem.content
+//                        this.downloadUrl = draftModelItem.imageDownloadURL
+//                        this.caption = draftModelItem.imageCaption
+//                    }
+////                        runBlocking {
+////                            draftContentList.add(newDraftDataItem)
+////                            Log.d(
+////                                TAG, """
+////                        getDraftModel:
+////                        new draftModelItem object added to draftContents list with contents:
+////                        content = ${newDraftDataItem.content}
+////                        draftContents list size = ${draftContentList.size}
+////                    """.trimIndent()
+////                            )
+////                        }
+//                    withContext(Dispatchers.Main) {
+//                        draftContentList.add(newDraftDataItem)
+//                    }
+//                    Log.d(
+//                        TAG, """
+//                        getDraftModel:
+//                        new draftModelItem object added to draftContents list with contents:
+//                        content = ${newDraftDataItem.content}
+//                        draftContents list size = ${draftContentList.size}
+//                    """.trimIndent()
+//                    )
+//                }
+//            }
 //        }
-//        Log.d(TAG, "getDraftFromDatabase: ${DraftModel(draftContent)}")
-//        return DraftModel(draftContent)
+//        Log.d(
+//            TAG, """
+//            getDraftModel:
+//            finally returning DraftModel with ${draftContentList.size} draftDataItems
+//        """.trimIndent()
+//        )
+//        return DraftModel(draftContentList)
 //    }
+    // DOES NOT WORK!!!!   ...throws typecast error from Job to DraftModel
 
-    fun getDraftFromDatabase(draftID: Long?): DraftModel {
+    suspend fun getDraftContentForEditor(id: Long): DraftModel {
         val draftContent = ArrayList<DraftDataItemModel>()
-        viewModelScope.launch(Dispatchers.IO) {
-            val draftDataItemList: List<NoteDraftModelWithNoteDraftDataItem> =
-                notesRepository.getNoteDraftModelAndNoteDraftDataItem(draftID)
-
-            // traverse through the draftItemList and create a DraftDataItemModel and set its properties
-            draftDataItemList.forEach {
-                val newDraftItem = DraftDataItemModel().apply {
-                    this.itemType = it.draftDataItem.first().itemType
-                    this.mode = it.draftDataItem.first().mode
-                    this.style = it.draftDataItem.first().style
-                    this.content = it.draftDataItem.first().content
-                    this.downloadUrl = it.draftDataItem.first().imageDownloadURL
-                    this.caption = it.draftDataItem.first().imageCaption
+        val noteAndDraftModelList = notesRepository.getNoteWithDraftModelUsingId(id)
+        with(noteAndDraftModelList.first()) {
+            this.draftModel.forEach { draftModelItem ->
+                val newDraftDataItem = DraftDataItemModel().apply {
+                    this.itemType = draftModelItem.itemType
+                    this.mode = draftModelItem.mode
+                    this.style = draftModelItem.style
+                    this.content = draftModelItem.content
+                    this.downloadUrl = draftModelItem.imageDownloadURL
+                    this.caption = draftModelItem.imageCaption
                 }
-                draftContent.add(newDraftItem)
+                draftContent.add(newDraftDataItem)
+                Log.d(
+                    TAG, """
+                        getDraftContentForEditor: 
+                        new draftModelItem object added to draftContents list with contents: 
+                        content = ${newDraftDataItem.content}
+                        draftContents list size = ${draftContent.size}
+                    """.trimIndent()
+                )
             }
-
-//            DraftModel(draftContent)
         }
         Log.d(
-            TAG, """
-                getDraftFromDatabase: 
-                draft ID: ${DraftModel(draftContent).draftId}
-                draft contents: ${DraftModel(draftContent).items}
-                draft size: ${DraftModel(draftContent).items.size}
-                """.trimIndent()
+            TAG,
+            "getDraftContentForEditor: returning DraftModel with size = ${draftContent.size}"
         )
         return DraftModel(draftContent)
     }
 
     fun getEditorDraftContent(): DraftModel {
         val contentType = ArrayList<DraftDataItemModel>()
-        val heading = DraftDataItemModel()
-        heading.itemType = DraftModel.ITEM_TYPE_TEXT
-        heading.content = "New Note Testing"
-        heading.mode = MODE_PLAIN
-        heading.style = H1
+        val heading = DraftDataItemModel().apply {
+            this.itemType = DraftModel.ITEM_TYPE_TEXT
+            this.content = "New Note Testing"
+            this.mode = MODE_PLAIN
+            this.style = H1
+        }
+        contentType.add(heading)
         Log.d(TAG, "getEditorDraftContent: ${DraftModel(contentType)}")
         return DraftModel(contentType)
     }
-//
-//    /** TODO "Complete this method"
-//     * -> Take the note and return an ArrayList<DraftDataItemModel> to render the editor
-//     * -> Implementation idea:
-//     *          1. Split the note in various DraftDataItemModel of suitable TYPE
-//     *          2. Then prepare an ArrayList
-//    */
-//    fun renderNotesList(noteContent: Note): ArrayList<DraftDataItemModel> {
-//        val notesList = noteContent.noteText.split("\n")
-//        Log.d(
-//            TAG, """
-//            renderNotesList:
-//            noteContent after splitting up with "\n" for Note with ID ${noteContent.ID}:
-//            $notesList
-//            #######################################
-//
-//
-//        """.trimIndent()
-//        )
-//        val draftDataList = ArrayList<DraftDataItemModel>()
-//        for (note in notesList) {
-//            val newDraftItem = DraftDataItemModel()
-//            when(newDraftItem.itemType) {
-//                MODE_PLAIN -> {}
-//                MODE_OL -> {}
-//                MODE_UL -> {}
-//            }
-//            with(newDraftItem) {
-//                content = note
-//            }
-//            draftDataList.add(newDraftItem)
-//            Log.d(
-//                TAG, """
-//                renderNotesList():
-//                $newDraftItem
-//                """.trimIndent()
-//            )
-//        }
-//        return draftDataList
-//    }
 
     inner class EditorControlBarListener : EditorControlBar.EditorControlListener {
         override fun onInsertImageClicked() {

@@ -1,56 +1,43 @@
 package com.example.notesapp
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.notesapp.database.NoteDao
+import com.example.notesapp.database.entities.DraftModel
 import com.example.notesapp.database.entities.Note
-import com.example.notesapp.database.entities.NoteDraftDataItem
-import com.example.notesapp.database.entities.NoteDraftModel
-import com.example.notesapp.database.entities.entityRelations.NoteAndNoteDraftModel
-import com.example.notesapp.database.entities.entityRelations.NoteDraftModelWithNoteDraftDataItem
+import com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel
+
+private val TAG = "NotesRepository"
 
 class NotesRepository(private val noteDao: NoteDao) {
 
-    val getNotesList: LiveData<List<NoteAndNoteDraftModel>> = noteDao.getAllNotes()
+    val allNotesList: LiveData<List<NoteWithDraftModel>> = noteDao.getAllNotes()
 
-//    val getDraftModelList: LiveData<List<NoteDraftModelWithNoteDraftDataItem>> = noteDao.getAllDraftModelWithDraftDataItem()
-
-//    fun getNoteAndNoteDraftModel(id: Int): LiveData<List<NoteAndNoteDraftModel>> {
-//        return noteDao.getNoteAndDraftModelWithID(id)
-//    }
-
-    fun getNoteDraftModelAndNoteDraftDataItem(draftID: Long?): List<NoteDraftModelWithNoteDraftDataItem> {
-        return noteDao.getDraftModelWithDraftDataItemWithDraftID(draftID)
+    suspend fun getNoteWithDraftModelUsingId(id: Long): List<NoteWithDraftModel> {
+        return noteDao.getNoteWithDraftModelUsingId(id)
     }
 
-    suspend fun insertNote(note: Note) {
-        noteDao.insertNote(note)
+    suspend fun getNoteIdUsingNoteText(noteText: String): Long {
+        Log.d(
+            TAG,
+            "getNoteIdUsingNoteText: returning note ID = ${noteDao.getNoteIdUsingNoteText(noteText)}"
+        )
+        return noteDao.getNoteIdUsingNoteText(noteText)
     }
 
-    suspend fun insertNoteDraftModel(draftModel: NoteDraftModel) {
-        noteDao.insertNoteDraftModel(draftModel)
+    suspend fun addNote(note: Note) {
+        noteDao.addNote(note)
     }
 
-    suspend fun insertNoteDraftDataItem(draftDataItem: NoteDraftDataItem) {
-        noteDao.insertNoteDraftDataItem(draftDataItem)
+    suspend fun addDraftModel(draftModel: DraftModel) {
+        noteDao.addDraftModel(draftModel)
     }
 
     suspend fun deleteNote(note: Note) {
         noteDao.deleteNote(note)
     }
 
-    suspend fun deleteNoteDraftModel(draftModel: NoteDraftModel) {
-        noteDao.deleteNoteDraftModel(draftModel)
+    suspend fun deleteDraftModel(draftModel: DraftModel) {
+        noteDao.deleteDraftModel(draftModel)
     }
-
-    suspend fun deleteNoteDraftDataItem(draftDataItem: NoteDraftDataItem) {
-        noteDao.deleteNoteDraftDataItem(draftDataItem)
-    }
-
-//    suspend fun getAllNotes() : List<Note> {
-//        return noteDao.getAllNotes()
-//    }
-//
-//    suspend fun getNoteWithDraftModelUsingId(id: Int): List<NoteWithDraftModel> {
-//        return noteDao.getNoteWithDraftModelUsingId(id)
-//    }
 }
