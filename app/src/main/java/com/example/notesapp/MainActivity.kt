@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.notesapp.databinding.ActivityMainBinding
 
 private const val TAG = "MainActivity"
@@ -20,8 +20,10 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate: started")
 
         //navController
-        setupActionBarWithNavController(findNavController(R.id.fragmentContainerHome))
-
+//        setupActionBarWithNavController(findNavController(R.id.fragmentContainerHome))
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerHome) as NavHostFragment
+        val navController = navHostFragment.navController
     }
 
     override fun onSupportNavigateUp(): Boolean {

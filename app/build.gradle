@@ -1,8 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id "androidx.navigation.safeargs.kotlin"
+    id "kotlin-kapt"
 }
-apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 30
 
@@ -67,6 +69,12 @@ dependencies {
 
     //Fragments
     implementation "androidx.fragment:fragment-ktx:$rootProject.fragment_version"
+
+    //Editor
+    implementation "com.github.bxute:MarkDEditor:$rootProject.markd_editor_version"
+
+    //Gosn
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
