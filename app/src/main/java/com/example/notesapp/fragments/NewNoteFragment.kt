@@ -7,12 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.Navigation
 import com.example.notesapp.R
 import com.example.notesapp.database.entities.DraftModel
 import com.example.notesapp.database.entities.Note
-import com.example.notesapp.databinding.FragmentNewNoteBinding
+import com.example.notesapp.databinding.NoteDetailScreenBinding
 import com.example.notesapp.viewModel.NotesViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import xute.markdeditor.EditorControlBar
 import xute.markdeditor.MarkDEditor
 import xute.markdeditor.Styles.TextComponentStyle.H1
@@ -24,20 +28,20 @@ private const val TAG = "NewNoteFragment"
 class NewNoteFragment : Fragment() {
 
     private lateinit var notesViewModel: NotesViewModel
-    private lateinit var binding: FragmentNewNoteBinding
+    private lateinit var binding: NoteDetailScreenBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewNoteBinding.inflate(inflater, container, false)
+        binding = NoteDetailScreenBinding.inflate(inflater, container, false)
         Log.d(TAG, "onCreateView: started")
 
         // ViewModel
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
 
         // Configure the Editor
-        val editor: MarkDEditor = binding.noteTextEditor
+        val editor: MarkDEditor = binding.editor
         val editorControlBar: EditorControlBar = binding.editorControlBar
 
         editorControlBar.setEditorControlListener(notesViewModel.editorControlListener)
@@ -51,30 +55,73 @@ class NewNoteFragment : Fragment() {
 
         editorControlBar.setEditor(editor)
 
-        binding.buttonConfirmNote.setOnClickListener {
-            val noteText = editor.markdownContent
-            val draftDataItemsList = DraftManager().processDraftContent(editor).items
-            Log.d(TAG, "onCreateView: draftContentItems: $draftDataItemsList")
-            saveNote(
-                noteText = noteText,
-                bannerImageURL = null,
-                draftDataItemsList = draftDataItemsList
-            )
-            findNavController().navigate(R.id.action_newNoteFragment_to_homeFragment)
+        binding.ivBackButton.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val noteText = editor.markdownContent
+                val draftDataItemsList = DraftManager().processDraftContent(editor).items
+                if (draftDataItemsList.isEmpty()) {
+                    Log.d(TAG, "!!!!!!!!!!!!!!!!    List empty    !!!!!!!!!!!!!!!!")
+                } else {
+                    printDraftModelContents(draftDataItemsList)
+                }
+
+                saveNote(
+                    noteText = noteText,
+                    bannerURL = null,
+                    draftDataItemsList = draftDataItemsList
+                )
+//                val noteText = editor.markdownContent
+//                if (noteText != "\\n# \\n") {
+//                    val newNote = Note(
+//                        ID = 0,
+//                        noteText = noteText,
+//                        noteImageBannerURL = null
+//                    )
+//                    notesViewModel.addNewNote(newNote)
+//
+//                    // get the ID for the current note that was just saved in notes_table
+//                    var newNoteId: Long? = null
+//                    try {
+//                        newNoteId = notesViewModel.getNoteIdUsingNoteText(noteText)
+//                        Log.d(TAG, "saveNote: newNoteID received from DB with ID = $newNoteId")
+//                    } catch (exception: Exception) {
+//                        Log.d(TAG, "saveNote: $exception")
+//                    }
+//
+//                    val draftDataItemsList = DraftManager().processDraftContent(editor).items
+//                    printDraftModelContents(draftDataItemsList)
+//                    draftDataItemsList.forEach {
+//                        val newDraftModelItem = DraftModel(
+//                            draftID = 0,
+//                            ID = newNoteId,
+//                            itemType = it.itemType,
+//                            mode = it.mode,
+//                            style = it.style,
+//                            content = it.content,
+//                            imageDownloadURL = it.downloadUrl,
+//                            imageCaption = it.caption
+//                        )
+//                        notesViewModel.addDraftModel(newDraftModelItem)
+//                        delay(50)
+//                    }
+//                }
+            }
+            Navigation.findNavController(binding.root)
+                .navigate(R.id.action_newNoteFragment_to_homeFragment)
         }
         return binding.root
     }
 
-    private fun saveNote(
+    private suspend fun saveNote(
         noteText: String,
-        bannerImageURL: String?,
+        bannerURL: String?,
         draftDataItemsList: ArrayList<DraftDataItemModel>
     ) {
-        if (noteText.isNotEmpty()) {
+        if (noteText != "\\n# \\n") {
             val newNote = Note(
                 ID = 0,
                 noteText = noteText,
-                noteImageBannerURL = bannerImageURL
+                noteImageBannerURL = null
             )
             notesViewModel.addNewNote(newNote)
 
@@ -87,6 +134,7 @@ class NewNoteFragment : Fragment() {
                 Log.d(TAG, "saveNote: $exception")
             }
 
+            printDraftModelContents(draftDataItemsList)
             draftDataItemsList.forEach {
                 val newDraftModelItem = DraftModel(
                     draftID = 0,
@@ -99,7 +147,19 @@ class NewNoteFragment : Fragment() {
                     imageCaption = it.caption
                 )
                 notesViewModel.addDraftModel(newDraftModelItem)
+                delay(50)
             }
+        }
+    }
+
+    private fun printDraftModelContents(draftModelList: ArrayList<DraftDataItemModel>) {
+        draftModelList.forEach {
+            println(
+                """
+                content: ${it.content}
+                ________________________________________
+            """.trimIndent()
+            )
         }
     }
 }

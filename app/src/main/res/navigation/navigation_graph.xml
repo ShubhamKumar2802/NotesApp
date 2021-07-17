@@ -11,16 +11,18 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_newNoteFragment"
-            app:destination="@id/newNoteFragment" />
+            app:destination="@id/newNoteFragment"
+            app:popUpTo="@id/homeFragment" />
         <action
             android:id="@+id/action_homeFragment_to_editNoteFragment"
-            app:destination="@id/editNoteFragment" />
+            app:destination="@id/editNoteFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/newNoteFragment"
         android:name="com.example.notesapp.fragments.NewNoteFragment"
         android:label="Add New Note"
-        tools:layout="@layout/fragment_new_note">
+        tools:layout="@layout/note_detail_screen">
         <action
             android:id="@+id/action_newNoteFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -28,12 +30,33 @@
     <fragment
         android:id="@+id/editNoteFragment"
         android:name="com.example.notesapp.fragments.EditNoteFragment"
-        android:label="Edit Note">
+        android:label="Edit Note"
+        tools:layout="@layout/note_detail_screen">
         <action
             android:id="@+id/action_editNoteFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
         <argument
             android:name="selectedNote"
             app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
+        <action
+            android:id="@+id/action_editNoteFragment_to_bottomSheetNoteDetailFragment"
+            app:destination="@id/bottomSheetDetailFragment" />
+
     </fragment>
+    <dialog
+        android:id="@+id/bottomSheetDetailFragment"
+        android:name="com.example.notesapp.fragments.BottomSheetDetailFragment"
+        android:label="BottomSheetNoteDetailFragment"
+        tools:layout="@layout/fragment_note_detail_bottom_sheet">
+        <action
+            android:id="@+id/action_bottomSheetNoteDetailFragment_to_editNoteFragment"
+            app:destination="@id/editNoteFragment" />
+        <argument
+            android:name="bottomSheetArg"
+            app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
+        <action
+            android:id="@+id/action_bottomSheetDetailFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+
+    </dialog>
 </navigation>

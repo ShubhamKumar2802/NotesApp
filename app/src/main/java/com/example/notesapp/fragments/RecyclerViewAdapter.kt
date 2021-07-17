@@ -1,4 +1,4 @@
-package com.example.notesapp.fragments.horizontalRecyclerView
+package com.example.notesapp.fragments
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,15 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel
-import com.example.notesapp.databinding.HorizontalRvCardLayoutBinding
-import com.example.notesapp.fragments.HomeFragmentDirections
+import com.example.notesapp.databinding.RvLayoutVerticalBinding
 import com.example.notesapp.viewModel.NotesViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import xute.markdeditor.MarkDEditor
-import xute.markdeditor.Styles.TextComponentStyle
-import xute.markdeditor.models.DraftModel
 
 private val TAG = "notesHorizontalAdapter"
 
@@ -25,13 +21,13 @@ class NotesHorizontalAdapter : RecyclerView.Adapter<NotesHorizontalAdapter.Notes
 
     private var notesList = emptyList<NoteWithDraftModel>()
 
-    private lateinit var binding: HorizontalRvCardLayoutBinding
+    private lateinit var binding: RvLayoutVerticalBinding
     private lateinit var notesViewModel: NotesViewModel
 
     inner class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
-        binding = HorizontalRvCardLayoutBinding.inflate(
+        binding = RvLayoutVerticalBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -42,28 +38,16 @@ class NotesHorizontalAdapter : RecyclerView.Adapter<NotesHorizontalAdapter.Notes
         return NotesViewHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NotesHorizontalAdapter.NotesViewHolder, position: Int) {
         with(binding) {
-            val editor: MarkDEditor = binding.editorHorizontalRv
-            editor.configureEditor(
-                null,
-                null,
-                true,
-                null,
-                TextComponentStyle.NORMAL
-            )
-
-//            val currentNoteDraft: DraftModel =
-//                notesViewModel.getDraftModel(notesList[position].note.ID)
-//            editor.loadDraft(currentNoteDraft)
-
             GlobalScope.launch(Dispatchers.Main) {
                 val currentNoteDraft =
                     notesViewModel.getDraftContentForEditor(notesList[position].note.ID)
-                editor.loadDraft(currentNoteDraft)
+//                editor.loadDraft(currentNoteDraft)
+                tvNoteTitleVerticalRv.text = currentNoteDraft.items.first().content.toString()
             }
 
-            cvNotePreview.setOnClickListener {
+            cardPreview.setOnClickListener {
                 val action =
                     HomeFragmentDirections.actionHomeFragmentToEditNoteFragment(notesList[position])
                 holder.itemView.findNavController().navigate(action)
@@ -83,9 +67,5 @@ class NotesHorizontalAdapter : RecyclerView.Adapter<NotesHorizontalAdapter.Notes
         this.notesList = note
         notifyDataSetChanged()
         Log.d(TAG, "setData: List updated to $itemCount Notes")
-    }
-
-    private suspend fun getCurrentNoteDraftModel(currentCardPosition: Int): DraftModel {
-        return notesViewModel.getDraftContentForEditor(notesList[currentCardPosition].note.ID)
     }
 }

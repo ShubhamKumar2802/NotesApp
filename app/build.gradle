@@ -73,6 +73,9 @@ dependencies {
     //Editor
     implementation "com.github.bxute:MarkDEditor:$rootProject.markd_editor_version"
 
+    //Gosn
+    implementation 'com.google.code.gson:gson:2.8.6'
+
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"

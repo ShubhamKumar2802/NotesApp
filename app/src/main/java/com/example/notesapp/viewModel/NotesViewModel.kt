@@ -32,14 +32,14 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         notesList = notesRepository.allNotesList
     }
 
-    fun addNewNote(note: Note) {
+    suspend fun addNewNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.addNote(note)
             Log.d(TAG, "Note Added: ID:${note.ID}; Content:${note.noteText}")
         }
     }
 
-    fun addDraftModel(draftModel: com.example.notesapp.database.entities.DraftModel) {
+    suspend fun addDraftModel(draftModel: com.example.notesapp.database.entities.DraftModel) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.addDraftModel(draftModel)
         }
@@ -47,14 +47,32 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
             TAG, """
             addDraftModel: new draftModel added with
             ID = ${draftModel.ID}
+            Content = ${draftModel.content}
         """.trimIndent()
         )
     }
 
+//    fun deleteNote(noteId: Long) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            notesRepository.deleteNote(noteId)
+//        }
+//    }
+//
+//    fun deleteDraftModel(noteId: Long) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            notesRepository.deleteDraftModel(noteId)
+//        }
+//    }
+
     fun deleteNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.deleteNote(note)
-            Log.d(TAG, "Note deleted: $note")
+        }
+    }
+
+    fun deleteDraftModel(draftModel: com.example.notesapp.database.entities.DraftModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            notesRepository.deleteDraftModel(draftModel)
         }
     }
 
@@ -68,6 +86,17 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun getNoteUsingId(id: Long): Note {
+        return runBlocking {
+            notesRepository.getNoteUsingId(id)
+        }
+    }
+
+    fun getNoteWithDraftModelUsingId(id: Long): NoteWithDraftModel {
+        return runBlocking {
+            notesRepository.getNoteWithDraftModelUsingId(id).first()
+        }
+    }
     /*
     -- noteDraftModel: size = 1
     -- noteDraftModel.draftModel: size = number of draftModel items retrieved from database
@@ -174,6 +203,34 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         contentType.add(heading)
         Log.d(TAG, "getEditorDraftContent: ${DraftModel(contentType)}")
         return DraftModel(contentType)
+    }
+
+    fun updateNote(id: Long, noteText: String, bannerImageUrl: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            notesRepository.updateNote(id, noteText, bannerImageUrl)
+        }
+    }
+
+    fun updateDraftModel(
+        id: Long,
+        itemType: Int,
+        mode: Int,
+        style: Int,
+        content: String,
+        imageUrl: String?,
+        caption: String?
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            notesRepository.updateDraftModel(
+                id,
+                itemType,
+                mode,
+                style,
+                content,
+                imageUrl,
+                caption
+            )
+        }
     }
 
     inner class EditorControlBarListener : EditorControlBar.EditorControlListener {

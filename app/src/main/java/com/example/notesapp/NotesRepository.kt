@@ -25,6 +25,10 @@ class NotesRepository(private val noteDao: NoteDao) {
         return noteDao.getNoteIdUsingNoteText(noteText)
     }
 
+    suspend fun getNoteUsingId(id: Long): Note {
+        return noteDao.getNoteUsingId(id)
+    }
+
     suspend fun addNote(note: Note) {
         noteDao.addNote(note)
     }
@@ -33,11 +37,42 @@ class NotesRepository(private val noteDao: NoteDao) {
         noteDao.addDraftModel(draftModel)
     }
 
+    //    suspend fun deleteNote(id: Long) {
+//        noteDao.deleteNote(id)
+//    }
+//
+//    suspend fun deleteDraftModel(id: Long) {
+//        noteDao.deleteDraftModel(id)
+//    }
     suspend fun deleteNote(note: Note) {
         noteDao.deleteNote(note)
     }
 
     suspend fun deleteDraftModel(draftModel: DraftModel) {
         noteDao.deleteDraftModel(draftModel)
+    }
+
+    suspend fun updateNote(id: Long, noteText: String, bannerImageUrl: String?) {
+        noteDao.updateNote(id, noteText, bannerImageUrl)
+    }
+
+    suspend fun updateDraftModel(
+        id: Long,
+        itemType: Int,
+        mode: Int,
+        style: Int,
+        content: String,
+        imageUrl: String?,
+        caption: String?
+    ) {
+        noteDao.updateDraftModel(
+            id,
+            itemType,
+            mode,
+            style,
+            content,
+            imageUrl,
+            caption
+        )
     }
 }

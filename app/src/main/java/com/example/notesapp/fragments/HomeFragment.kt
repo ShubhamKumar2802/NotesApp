@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notesapp.R
 import com.example.notesapp.databinding.FragmentHomeBinding
-import com.example.notesapp.fragments.horizontalRecyclerView.NotesHorizontalAdapter
 import com.example.notesapp.viewModel.NotesViewModel
 
 
@@ -31,35 +31,29 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "onCreateView: started")
 
         binding.buttonAddNote.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_newNoteFragment)
+            Log.d(
+                TAG,
+                "onCreateView: current Fragment is ${findNavController().currentDestination?.toString()}"
+            )
+            val action = HomeFragmentDirections.actionHomeFragmentToNewNoteFragment()
+            binding.root.findNavController().navigate(action)
         }
 
         binding.tvHomePageGreeting.setText(R.string.home_fragment_welcome_message)
 
         // Horizontal RecyclerView
-        val horizontalRecyclerViewAdapter = NotesHorizontalAdapter()
+        val recyclerViewAdapter = NotesHorizontalAdapter()
         val rvHorizontal = binding.rvNotesHorizontal
-        rvHorizontal.adapter = horizontalRecyclerViewAdapter
+        rvHorizontal.adapter = recyclerViewAdapter
         rvHorizontal.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         // NotesViewModel
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
         notesViewModel.getAllNotes().observe(viewLifecycleOwner, Observer {
-            horizontalRecyclerViewAdapter.setData(it)
+            recyclerViewAdapter.setData(it)
         })
 
-        // setting custom background color
-//        val homeFragmentBackground: GradientDrawable? = binding.ivBackgroundGradient.background as GradientDrawable?
-//        homeFragmentBackground.setColor(Color.GREEN)
         return binding.root
     }
-
-//    fun Drawable.overrideColor(@ColorInt colorInt: Int) {
-//        when (this) {
-//            is GradientDrawable -> setColor(colorInt)
-//            is ShapeDrawable -> paint.color = colorInt
-//            is ColorDrawable -> color = colorInt
-//        }
-//    }
 }
