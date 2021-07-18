@@ -1,5 +1,6 @@
 package com.example.notesapp.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,6 +42,31 @@ class HomeFragment : Fragment() {
 
         binding.tvHomePageGreeting.setText(R.string.home_fragment_welcome_message)
 
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.scrollViewNotesRecyclerView.setOnScrollChangeListener { view, scrollX, scrollY, previousX, previousY ->
+                if (scrollY > previousY + 1 && binding.buttonAddNote.isExtended) {
+                    binding.buttonAddNote.shrink()
+                }
+                if (scrollY < previousY - 1 && !binding.buttonAddNote.isExtended) {
+                    binding.buttonAddNote.extend()
+                }
+
+                // if the nestedScrollView is at the first item of the list then the
+                // extended floating action should be in extended state
+                if (scrollY == 0) {
+                    binding.buttonAddNote.extend()
+                }
+            }
+        }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: started")
         // Horizontal RecyclerView
         val recyclerViewAdapter = NotesHorizontalAdapter()
         val rvHorizontal = binding.rvNotesHorizontal
@@ -53,7 +79,5 @@ class HomeFragment : Fragment() {
         notesViewModel.getAllNotes().observe(viewLifecycleOwner, Observer {
             recyclerViewAdapter.setData(it)
         })
-
-        return binding.root
     }
 }

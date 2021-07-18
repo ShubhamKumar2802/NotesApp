@@ -152,29 +152,7 @@ class EditNoteFragment : Fragment() {
                     noteWithDraftModel
                 )
             findNavController().navigate(action)
-//            val bottomSheet = BottomSheetDetailFragment()
-//            bottomSheet.show(parentFragmentManager, "bottomSheet")
         }
-
-//        if (args.selectedOption.isNotEmpty()) {
-//            val currentNote = Note(
-//                ID = args.selectedNote.note.ID,
-//                noteText = editor.markdownContent,
-//                noteImageBannerURL = null
-//            )
-//        }
         return binding.root
     }
-
-//    private fun optionSelected(selectedOption: String, note: Note, draftModel: DraftModel) {
-//        when (selectedOption) {
-//            "Favorite" -> {
-//
-//            }
-//            "Delete" -> {
-//                notesViewModel.deleteNote(note)
-//                notesViewModel.deleteDraftModel(draftModel)
-//            }
-//        }
-//    }
 }

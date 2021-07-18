@@ -5,91 +5,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F2F2">
-    <!--    <ImageView-->
-    <!--        android:id="@+id/ivBackgroundGradient"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TextView
         android:id="@+id/tvHomePageGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:paddingBottom="8dp"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_rv_type"
+        app:layout_constraintEnd_toStartOf="@+id/iv_menu"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Good Evening!" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_rv_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
-
     <ImageView
         android:id="@+id/iv_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_margin="25dp"
+        android:contentDescription="@string/menu_icon"
         android:src="@drawable/ic_menu"
-        app:layout_constraintBottom_toBottomOf="@+id/tvHomePageGreeting"
+        app:layout_constraintBottom_toTopOf="@+id/scroll_view_notes_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvHomePageGreeting" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_empty_recycler_view"
-        android:src="@drawable/ic_empty_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/rvNotesHorizontal"
+        android:contentDescription="@string/empty_recycler_view_image"
+        android:src="@drawable/ic_empty_recycler_view"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rvNotesHorizontal" />
+        app:layout_constraintTop_toTopOf="@+id/scroll_view_notes_recycler_view" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNotesHorizontal"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view_notes_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHomePageGreeting"
-        tools:listitem="@layout/rv_layout_vertical" />
+        app:layout_constraintTop_toBottomOf="@+id/tvHomePageGreeting">
 
-    <!--    <com.google.android.material.button.MaterialButton-->
-    <!--        android:id="@+id/buttonAddNote"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginBottom="16dp"-->
-    <!--        android:text="Add a Note"-->
-    <!--        app:cornerRadius="16dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent" />-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNotesHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/rv_layout_vertical" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/buttonAddNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="add a note"
         android:backgroundTint="#FF6666"
-        app:icon="@drawable/ic_favorite"
+        android:text="@string/add_a_note"
         android:textAlignment="center"
+        app:icon="@drawable/ic_add_note"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

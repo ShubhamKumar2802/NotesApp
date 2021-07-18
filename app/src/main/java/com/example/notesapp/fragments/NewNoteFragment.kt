@@ -40,6 +40,8 @@ class NewNoteFragment : Fragment() {
         // ViewModel
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
 
+        binding.ivOptionsButton.alpha = 0F
+
         // Configure the Editor
         val editor: MarkDEditor = binding.editor
         val editorControlBar: EditorControlBar = binding.editorControlBar
@@ -64,47 +66,11 @@ class NewNoteFragment : Fragment() {
                 } else {
                     printDraftModelContents(draftDataItemsList)
                 }
-
                 saveNote(
                     noteText = noteText,
                     bannerURL = null,
                     draftDataItemsList = draftDataItemsList
                 )
-//                val noteText = editor.markdownContent
-//                if (noteText != "\\n# \\n") {
-//                    val newNote = Note(
-//                        ID = 0,
-//                        noteText = noteText,
-//                        noteImageBannerURL = null
-//                    )
-//                    notesViewModel.addNewNote(newNote)
-//
-//                    // get the ID for the current note that was just saved in notes_table
-//                    var newNoteId: Long? = null
-//                    try {
-//                        newNoteId = notesViewModel.getNoteIdUsingNoteText(noteText)
-//                        Log.d(TAG, "saveNote: newNoteID received from DB with ID = $newNoteId")
-//                    } catch (exception: Exception) {
-//                        Log.d(TAG, "saveNote: $exception")
-//                    }
-//
-//                    val draftDataItemsList = DraftManager().processDraftContent(editor).items
-//                    printDraftModelContents(draftDataItemsList)
-//                    draftDataItemsList.forEach {
-//                        val newDraftModelItem = DraftModel(
-//                            draftID = 0,
-//                            ID = newNoteId,
-//                            itemType = it.itemType,
-//                            mode = it.mode,
-//                            style = it.style,
-//                            content = it.content,
-//                            imageDownloadURL = it.downloadUrl,
-//                            imageCaption = it.caption
-//                        )
-//                        notesViewModel.addDraftModel(newDraftModelItem)
-//                        delay(50)
-//                    }
-//                }
             }
             Navigation.findNavController(binding.root)
                 .navigate(R.id.action_newNoteFragment_to_homeFragment)
