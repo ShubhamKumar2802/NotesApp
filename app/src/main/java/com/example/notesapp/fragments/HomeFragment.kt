@@ -42,14 +42,27 @@ class HomeFragment : Fragment() {
 
         binding.tvHomePageGreeting.setText(R.string.home_fragment_welcome_message)
 
+        //RecyclerView
+        val recyclerViewAdapter = RecyclerViewAdapter()
+        val notesRecyclerView = binding.notesRv
+        notesRecyclerView.adapter = recyclerViewAdapter
+        notesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        notesRecyclerView.layoutManager =
+//            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
+        // NotesViewModel
+        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
+        notesViewModel.getAllNotes().observe(viewLifecycleOwner, Observer { note ->
+            recyclerViewAdapter.setData(note)
+        })
 
+        val offset = 5
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.scrollViewNotesRecyclerView.setOnScrollChangeListener { view, scrollX, scrollY, previousX, previousY ->
-                if (scrollY > previousY + 1 && binding.buttonAddNote.isExtended) {
+                if (scrollY > previousY + offset && binding.buttonAddNote.isExtended) {
                     binding.buttonAddNote.shrink()
                 }
-                if (scrollY < previousY - 1 && !binding.buttonAddNote.isExtended) {
+                if (scrollY < previousY - offset && !binding.buttonAddNote.isExtended) {
                     binding.buttonAddNote.extend()
                 }
 
@@ -62,22 +75,5 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: started")
-        // Horizontal RecyclerView
-        val recyclerViewAdapter = NotesHorizontalAdapter()
-        val rvHorizontal = binding.rvNotesHorizontal
-        rvHorizontal.adapter = recyclerViewAdapter
-        rvHorizontal.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-        // NotesViewModel
-        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
-        notesViewModel.getAllNotes().observe(viewLifecycleOwner, Observer {
-            recyclerViewAdapter.setData(it)
-        })
     }
 }

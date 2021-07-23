@@ -8,19 +8,20 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.notesapp.R
 import com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel
 import com.example.notesapp.databinding.RvLayoutVerticalBinding
 import com.example.notesapp.viewModel.NotesViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-private val TAG = "notesHorizontalAdapter"
+private val TAG = "RecyclerViewAdapter"
 
-class NotesHorizontalAdapter : RecyclerView.Adapter<NotesHorizontalAdapter.NotesViewHolder>() {
+class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.NotesViewHolder>() {
 
     private var notesList = emptyList<NoteWithDraftModel>()
-
     private lateinit var binding: RvLayoutVerticalBinding
     private lateinit var notesViewModel: NotesViewModel
 
@@ -38,13 +39,25 @@ class NotesHorizontalAdapter : RecyclerView.Adapter<NotesHorizontalAdapter.Notes
         return NotesViewHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: NotesHorizontalAdapter.NotesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerViewAdapter.NotesViewHolder, position: Int) {
         with(binding) {
-            GlobalScope.launch(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.IO).launch {
                 val currentNoteDraft =
                     notesViewModel.getDraftContentForEditor(notesList[position].note.ID)
 //                editor.loadDraft(currentNoteDraft)
-                tvNoteTitleVerticalRv.text = currentNoteDraft.items.first().content.toString()
+                CoroutineScope(Dispatchers.Main).launch {
+                    tvNoteTitleVerticalRv.text = currentNoteDraft.items.first().content.toString()
+                }
+            }
+
+            val bannerImageUrl = notesList[position].note.noteImageBannerURL
+            if (bannerImageUrl.isNullOrEmpty()) {
+                Log.d(TAG, "onBindViewHolder: empty URL")
+            } else {
+                Glide.with(holder.itemView)
+                    .load(notesList[position].note.noteImageBannerURL)
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .into(binding.ivBannerImageVerticalRv)
             }
 
             cardPreview.setOnClickListener {

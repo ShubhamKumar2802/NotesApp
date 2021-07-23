@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.notesapp.databinding.ActivityMainBinding
+import com.unsplash.pickerandroid.photopicker.UnsplashPhotoPicker
 
 private const val TAG = "MainActivity"
 
@@ -24,6 +25,13 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerHome) as NavHostFragment
         val navController = navHostFragment.navController
+
+        UnsplashPhotoPicker.init(
+            application = this.application, // application
+            accessKey = BuildConfig.UNSPLASH_ACCESS_KEY,
+            secretKey = BuildConfig.UNSPLASH_SECRET_KEY
+            /* optional page size */
+        )
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -36,14 +36,14 @@
             app:layout_constraintGuide_percent="0.3" />
 
         <ImageView
-            android:contentDescription="@string/background_gradient"
             android:id="@+id/iv_background_gradient_vertical_rv"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:contentDescription="@string/background_gradient"
             android:src="@drawable/note_banner_image_gradient_vertical_rv"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
