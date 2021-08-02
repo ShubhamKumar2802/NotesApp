@@ -22,24 +22,31 @@ private const val TAG = "NotesViewModel"
 
 class NotesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var notesList: LiveData<List<NoteWithDraftModel>>
+    var notesList: LiveData<List<NoteWithDraftModel>>
     private val notesRepository: NotesRepository
     var editorControlListener: EditorControlBar.EditorControlListener = EditorControlBarListener()
 
     init {
+        Log.d(TAG, "initializing viewModel...")
         val notesDao = NoteDatabase.getNoteDatabase(application).getNoteDao()
         notesRepository = NotesRepository(notesDao)
         notesList = notesRepository.allNotesList
+//        Log.d(TAG, """
+//            notesList:
+//                ${notesList.value}
+//        """.trimIndent())
     }
 
-    suspend fun addNewNote(note: Note) {
+//    val allNotesList = notesRepository.allNotesList
+
+    fun addNewNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.addNote(note)
             Log.d(TAG, "Note Added: ID:${note.ID}; Content:${note.noteText}")
         }
     }
 
-    suspend fun addDraftModel(draftModel: com.example.notesapp.database.entities.DraftModel) {
+    fun addDraftModel(draftModel: com.example.notesapp.database.entities.DraftModel) {
         viewModelScope.launch(Dispatchers.IO) {
             notesRepository.addDraftModel(draftModel)
         }
@@ -77,6 +84,14 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getAllNotes(): LiveData<List<NoteWithDraftModel>> {
+        Log.d(
+            TAG, """
+            
+            ${notesRepository.allNotesList.value}
+            
+            
+        """.trimIndent()
+        )
         return notesRepository.allNotesList
     }
 
@@ -97,39 +112,42 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
             notesRepository.getNoteWithDraftModelUsingId(id).first()
         }
     }
+
     /*
     -- noteDraftModel: size = 1
     -- noteDraftModel.draftModel: size = number of draftModel items retrieved from database
      */
-    suspend fun getDraftContentForEditor(id: Long): DraftModel {
-        val draftContent = ArrayList<DraftDataItemModel>()
-        val noteAndDraftModelList = notesRepository.getNoteWithDraftModelUsingId(id)
-        with(noteAndDraftModelList.first()) {
-            this.draftModel.forEach { draftModelItem ->
-                val newDraftDataItem = DraftDataItemModel().apply {
-                    this.itemType = draftModelItem.itemType
-                    this.mode = draftModelItem.mode
-                    this.style = draftModelItem.style
-                    this.content = draftModelItem.content
-                    this.downloadUrl = draftModelItem.imageDownloadURL
-                    this.caption = draftModelItem.imageCaption
-                }
-                draftContent.add(newDraftDataItem)
-                Log.d(
-                    TAG, """
+    fun getDraftContentForEditor(id: Long): DraftModel {
+        return runBlocking {
+            val draftContent = ArrayList<DraftDataItemModel>()
+            val noteAndDraftModelList = notesRepository.getNoteWithDraftModelUsingId(id)
+            with(noteAndDraftModelList.first()) {
+                this.draftModel.forEach { draftModelItem ->
+                    val newDraftDataItem = DraftDataItemModel().apply {
+                        this.itemType = draftModelItem.itemType
+                        this.mode = draftModelItem.mode
+                        this.style = draftModelItem.style
+                        this.content = draftModelItem.content
+                        this.downloadUrl = draftModelItem.imageDownloadURL
+                        this.caption = draftModelItem.imageCaption
+                    }
+                    draftContent.add(newDraftDataItem)
+                    Log.d(
+                        TAG, """
                         getDraftContentForEditor: 
                         new draftModelItem object added to draftContents list with contents: 
                         content = ${newDraftDataItem.content}
                         draftContents list size = ${draftContent.size}
                     """.trimIndent()
-                )
+                    )
+                }
             }
+            Log.d(
+                TAG,
+                "getDraftContentForEditor: returning DraftModel with size = ${draftContent.size}"
+            )
+            DraftModel(draftContent)
         }
-        Log.d(
-            TAG,
-            "getDraftContentForEditor: returning DraftModel with size = ${draftContent.size}"
-        )
-        return DraftModel(draftContent)
     }
 
     fun getEditorDraftContent(): DraftModel {
@@ -169,6 +187,36 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
                 content,
                 imageUrl,
                 caption
+            )
+        }
+    }
+
+    fun emptyNote(draftModel: ArrayList<DraftDataItemModel>): Boolean {
+        Log.d(
+            TAG, """
+            emptyNote: started
+            draftModel received with ${draftModel.size} items
+        """.trimIndent()
+        )
+        var isEmpty = true
+        if (draftModel.size == 0) {
+            return true
+        }
+        draftModel.forEach {
+            if (it.content.isNotEmpty()) {
+                isEmpty = false
+            }
+        }
+        return isEmpty
+    }
+
+    fun printDraftModelContents(draftModelList: ArrayList<DraftDataItemModel>) {
+        draftModelList.forEach {
+            println(
+                """
+                content: ${it.content}
+                ________________________________________
+            """.trimIndent()
             )
         }
     }

@@ -27,20 +27,12 @@
         android:name="com.example.notesapp.fragments.NewNoteFragment"
         android:label="Add New Note"
         tools:layout="@layout/note_detail_screen">
-        <action
-            android:id="@+id/action_newNoteFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/editNoteFragment"
         android:name="com.example.notesapp.fragments.EditNoteFragment"
         android:label="Edit Note"
         tools:layout="@layout/note_detail_screen">
-        <action
-            android:id="@+id/action_editNoteFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:enterAnim="@anim/nav_default_enter_anim" />
         <argument
             android:name="selectedNote"
             app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
@@ -54,16 +46,9 @@
         android:name="com.example.notesapp.fragments.BottomSheetDetailFragment"
         android:label="BottomSheetNoteDetailFragment"
         tools:layout="@layout/fragment_note_detail_bottom_sheet">
-        <action
-            android:id="@+id/action_bottomSheetNoteDetailFragment_to_editNoteFragment"
-            app:destination="@id/editNoteFragment" />
         <argument
             android:name="bottomSheetArg"
             app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
-        <action
-            android:id="@+id/action_bottomSheetDetailFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:enterAnim="@anim/nav_default_enter_anim" />
 
     </dialog>
 </navigation>

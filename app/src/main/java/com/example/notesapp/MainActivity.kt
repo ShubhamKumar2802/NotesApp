@@ -3,8 +3,6 @@ package com.example.notesapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.example.notesapp.databinding.ActivityMainBinding
 import com.unsplash.pickerandroid.photopicker.UnsplashPhotoPicker
 
@@ -22,9 +20,9 @@ class MainActivity : AppCompatActivity() {
 
         //navController
 //        setupActionBarWithNavController(findNavController(R.id.fragmentContainerHome))
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerHome) as NavHostFragment
-        val navController = navHostFragment.navController
+//        val navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.fragmentContainerHome) as NavHostFragment
+//        val navController = navHostFragment.navController
 
         UnsplashPhotoPicker.init(
             application = this.application, // application
@@ -34,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.fragmentContainerHome)
-        return navController.navigateUp()
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.fragmentContainerHome)
+//        return navController.navigateUp()
+//    }
 }
