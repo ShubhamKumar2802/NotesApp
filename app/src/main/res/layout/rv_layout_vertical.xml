@@ -54,7 +54,7 @@
             android:ellipsize="end"
             android:textAlignment="textEnd"
             android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

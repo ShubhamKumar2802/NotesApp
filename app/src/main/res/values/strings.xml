@@ -11,4 +11,6 @@
     <string name="add_note_to_favorites_icon">add note to favorites icon</string>
     <string name="note_banner_image">Note Banner Image</string>
     <string name="background_gradient">background gradient</string>
+    <string name="back_button">Back Button</string>
+    <string name="banner_image_credits">Photo by <u>%1$s</u> on <u><a href="https://unsplash.com">Unsplash</a></u></string>
 </resources>

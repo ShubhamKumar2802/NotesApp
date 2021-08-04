@@ -4,18 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.notesapp.database.entities.DraftModel
+import androidx.room.TypeConverters
+import com.example.notesapp.database.entities.Converters
 import com.example.notesapp.database.entities.Note
 
 @Database(
-    entities = [
-        Note::class,
-        DraftModel::class
-    ],
+    entities = [Note::class],
     version = 1,
     exportSchema = false
 )
-
+@TypeConverters(Converters::class)
 abstract class NoteDatabase : RoomDatabase() {
     abstract fun getNoteDao(): NoteDao
 

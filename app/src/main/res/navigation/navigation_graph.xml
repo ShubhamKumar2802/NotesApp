@@ -7,35 +7,39 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.notesapp.fragments.HomeFragment"
+        android:name="com.example.notesapp.ui.fragments.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_newNoteFragment"
             app:destination="@id/newNoteFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/homeFragment" />
         <action
             android:id="@+id/action_homeFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/newNoteFragment"
-        android:name="com.example.notesapp.fragments.NewNoteFragment"
+        android:name="com.example.notesapp.ui.fragments.NewNoteFragment"
         android:label="Add New Note"
         tools:layout="@layout/note_detail_screen">
     </fragment>
     <fragment
         android:id="@+id/editNoteFragment"
-        android:name="com.example.notesapp.fragments.EditNoteFragment"
+        android:name="com.example.notesapp.ui.fragments.EditNoteFragment"
         android:label="Edit Note"
         tools:layout="@layout/note_detail_screen">
         <argument
             android:name="selectedNote"
-            app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
+            app:argType="long" />
         <action
             android:id="@+id/action_editNoteFragment_to_bottomSheetNoteDetailFragment"
             app:destination="@id/bottomSheetDetailFragment" />
@@ -43,12 +47,12 @@
     </fragment>
     <dialog
         android:id="@+id/bottomSheetDetailFragment"
-        android:name="com.example.notesapp.fragments.BottomSheetDetailFragment"
+        android:name="com.example.notesapp.ui.fragments.BottomSheetDetailFragment"
         android:label="BottomSheetNoteDetailFragment"
         tools:layout="@layout/fragment_note_detail_bottom_sheet">
         <argument
             android:name="bottomSheetArg"
-            app:argType="com.example.notesapp.database.entities.entityRelations.NoteWithDraftModel" />
+            app:argType="long" />
 
     </dialog>
 </navigation>

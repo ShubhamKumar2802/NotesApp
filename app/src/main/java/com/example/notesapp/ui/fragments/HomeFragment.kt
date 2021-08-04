@@ -1,4 +1,4 @@
-package com.example.notesapp.fragments
+package com.example.notesapp.ui.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -14,8 +14,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notesapp.R
 import com.example.notesapp.databinding.FragmentHomeBinding
+import com.example.notesapp.ui.RecyclerViewAdapter
 import com.example.notesapp.viewModel.NotesViewModel
-
 
 private const val TAG = "HomeFragment"
 
@@ -31,33 +31,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         Log.d(TAG, "onCreateView: started")
-//        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
-        notesViewModel = ViewModelProvider(requireActivity()).get(NotesViewModel::class.java)
-
-        //RecyclerView
-        val recyclerViewAdapter = RecyclerViewAdapter()
-        val notesRecyclerView = binding.notesRv
-        notesRecyclerView.adapter = recyclerViewAdapter
-        notesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-//        notesRecyclerView.layoutManager =
-//            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-        // NotesViewModel
-//        notesViewModel.getAllNotes().observe(viewLifecycleOwner, Observer { notesList ->
-//            recyclerViewAdapter.setData(notesList)
-//        })
-//        notesViewModel.getAllNotes().observeForever {
-//            recyclerViewAdapter.setData(it)
-//        }
-//
-//        notesViewModel.getAllNotes().observe(viewLifecycleOwner, Observer { allNotesList ->
-//            Log.d(TAG, "onCreateView: Observer updating notes list...")
-//            recyclerViewAdapter.setData(allNotesList)
-//        })
-        notesViewModel.notesList.observe(viewLifecycleOwner, Observer { allNotesList ->
-            Log.d(TAG, "onCreateView: Observing list...")
-            recyclerViewAdapter.setData(allNotesList)
-        })
         return binding.root
     }
 
@@ -65,6 +38,18 @@ class HomeFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: started")
         navController = Navigation.findNavController(view)
+        notesViewModel = ViewModelProvider(requireActivity()).get(NotesViewModel::class.java)
+
+        //RecyclerView
+        val recyclerViewAdapter = RecyclerViewAdapter()
+        val notesRecyclerView = binding.notesRv
+        notesRecyclerView.adapter = recyclerViewAdapter
+        notesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        notesViewModel.notesList.observe(viewLifecycleOwner, Observer { allNotesList ->
+            Log.d(TAG, "onCreateView: Observing list...")
+            recyclerViewAdapter.setData(allNotesList)
+        })
         binding.buttonAddNote.setOnClickListener(this)
         binding.tvHomePageGreeting.setText(R.string.home_fragment_welcome_message)
 

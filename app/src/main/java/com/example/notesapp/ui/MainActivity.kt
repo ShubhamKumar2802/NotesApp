@@ -1,8 +1,9 @@
-package com.example.notesapp
+package com.example.notesapp.ui
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.notesapp.BuildConfig
 import com.example.notesapp.databinding.ActivityMainBinding
 import com.unsplash.pickerandroid.photopicker.UnsplashPhotoPicker
 

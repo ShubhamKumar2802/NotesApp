@@ -1,4 +1,4 @@
-package com.example.notesapp.fragments
+package com.example.notesapp.ui.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.notesapp.R
-import com.example.notesapp.database.entities.DraftModel
+import com.example.notesapp.database.BannerImage
 import com.example.notesapp.database.entities.Note
 import com.example.notesapp.databinding.NoteDetailScreenBinding
 import com.example.notesapp.viewModel.NotesViewModel
@@ -21,8 +21,7 @@ import com.unsplash.pickerandroid.photopicker.data.UnsplashPhoto
 import com.unsplash.pickerandroid.photopicker.presentation.UnsplashPickerActivity
 import xute.markdeditor.EditorControlBar
 import xute.markdeditor.MarkDEditor
-import xute.markdeditor.Styles.TextComponentStyle.H1
-import xute.markdeditor.datatype.DraftDataItemModel
+import xute.markdeditor.Styles.TextComponentStyle.NORMAL
 import xute.markdeditor.utilities.DraftManager
 
 private const val TAG = "NewNoteFragment"
@@ -34,8 +33,8 @@ class NewNoteFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
     private lateinit var editor: MarkDEditor
     private lateinit var editorControlBar: EditorControlBar
+    private var bannerImage: BannerImage? = null
     private val REQUEST_CODE = 100
-    private var bannerImageUrl: String? = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,42 +64,12 @@ class NewNoteFragment : Fragment(), View.OnClickListener {
             "",            //serverToken
             false,              //isDraft: set true when you are loading draft(fresh editor window)
             "Type here...",  //default hint of input box
-            H1                       //default heading type
+            NORMAL                       //default heading type
         )
         editorControlBar.setEditor(editor)
+        binding.tvImageCredits.visibility = View.GONE
         binding.ivBackButton.setOnClickListener(this)
         binding.bannerImage.setOnClickListener(this)
-    }
-
-    private fun saveNote(
-        noteText: String,
-        bannerURL: String?,
-        draftDataItemsList: ArrayList<DraftDataItemModel>
-    ) {
-        Log.d(TAG, "saveNote: started")
-        if (!notesViewModel.emptyNote(draftDataItemsList)) {
-            val newNote = Note(
-                ID = 0,
-                noteText = noteText,
-                noteImageBannerURL = bannerURL
-            )
-            notesViewModel.addNewNote(newNote)
-
-            notesViewModel.printDraftModelContents(draftDataItemsList)
-            draftDataItemsList.forEach {
-                val newDraftModelItem = DraftModel(
-                    draftID = 0,
-                    ID = notesViewModel.getNoteIdUsingNoteText(noteText),
-                    itemType = it.itemType,
-                    mode = it.mode,
-                    style = it.style,
-                    content = it.content,
-                    imageDownloadURL = it.downloadUrl,
-                    imageCaption = it.caption
-                )
-                notesViewModel.addDraftModel(newDraftModelItem)
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,10 +79,15 @@ class NewNoteFragment : Fragment(), View.OnClickListener {
             val photos: ArrayList<UnsplashPhoto>? =
                 data?.getParcelableArrayListExtra(UnsplashPickerActivity.EXTRA_PHOTOS)
             with(photos?.first()) {
-                this?.urls?.regular?.let {
-                    bannerImageUrl = it
-                    loadBannerImage(bannerImageUrl)
-                }
+                bannerImage = BannerImage(
+                    imageUrl = this?.urls?.regular,
+                    authorName = this?.user?.name,
+                    authorProfileUrl = this?.user?.portfolio_url
+                )
+                binding.tvImageCredits.visibility = View.VISIBLE
+                binding.tvImageCredits.text =
+                    getString(R.string.banner_image_credits, bannerImage?.authorName)
+                loadBannerImage(bannerImage?.imageUrl)
             }
         }
     }
@@ -133,21 +107,16 @@ class NewNoteFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             binding.ivBackButton.id -> {
-                val noteText = editor.markdownContent
-//                val dm = editor.draft
-//                val jsonString = Gson().toJson(dm)
-//                printJsonString(jsonString)
                 val draftDataItemsList = DraftManager().processDraftContent(editor).items
-                if (draftDataItemsList.isEmpty()) {
-                    Log.d(TAG, "!!!!!!!!!!!!!!!!    List empty    !!!!!!!!!!!!!!!!")
-                } else {
-                    notesViewModel.printDraftModelContents(draftDataItemsList)
+                if (!notesViewModel.emptyNote(draftDataItemsList)) {
+                    notesViewModel.addNewNote(
+                        Note(
+                            ID = 0,
+                            noteContents = editor.draft,
+                            bannerImage = bannerImage
+                        )
+                    )
                 }
-                saveNote(
-                    noteText = noteText,
-                    bannerURL = bannerImageUrl,
-                    draftDataItemsList = draftDataItemsList
-                )
                 activity?.onBackPressed()
             }
             binding.bannerImage.id -> {
@@ -160,9 +129,5 @@ class NewNoteFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
-    }
-
-    private fun printJsonString(json: String) {
-        Log.d(TAG, json)
     }
 }

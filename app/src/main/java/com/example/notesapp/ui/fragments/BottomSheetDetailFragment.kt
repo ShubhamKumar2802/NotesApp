@@ -1,4 +1,4 @@
-package com.example.notesapp.fragments
+package com.example.notesapp.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -9,17 +9,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.notesapp.R
+import com.example.notesapp.database.entities.Note
 import com.example.notesapp.databinding.FragmentNoteDetailBottomSheetBinding
 import com.example.notesapp.viewModel.NotesViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+private const val TAG = "BottomSheetFragment"
+
 class BottomSheetDetailFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
-    private val TAG = "BottomSheetFragment"
     private val args by navArgs<BottomSheetDetailFragmentArgs>()
     private lateinit var binding: FragmentNoteDetailBottomSheetBinding
     private lateinit var notesViewModel: NotesViewModel
+    private lateinit var selectedNote: Note
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +39,7 @@ class BottomSheetDetailFragment : BottomSheetDialogFragment(), View.OnClickListe
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: started")
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
+        selectedNote = notesViewModel.getNoteUsingId(args.bottomSheetArg)
         binding.tvOptionDelete.setOnClickListener(this)
     }
 
@@ -50,19 +54,18 @@ class BottomSheetDetailFragment : BottomSheetDialogFragment(), View.OnClickListe
                         findNavController().popBackStack(R.id.editNoteFragment, false)
                     }
                     .setPositiveButton("Delete") { _, _ ->
-                        val note = args.bottomSheetArg.note
-                        val draftModel = args.bottomSheetArg.draftModel
-                        notesViewModel.deleteNote(note)
-                        draftModel.forEach {
-                            notesViewModel.deleteDraftModel(it)
-                        }
-//                        val action =
-//                            BottomSheetDetailFragmentDirections.actionBottomSheetDetailFragmentToHomeFragment()
                         //TODO "Show a SnackBar confirming that note was deleted"
 //                        Snackbar.make(view, "Note Deleted!", Snackbar.LENGTH_SHORT).show()
 //                        view.post {
 //                            findNavController().popBackStack(R.id.homeFragment, false)
 //                        }
+                        notesViewModel.deleteNote(
+                            Note(
+                                ID = selectedNote.ID,
+                                noteContents = selectedNote.noteContents,
+                                bannerImage = selectedNote.bannerImage
+                            )
+                        )
                         findNavController().popBackStack(R.id.editNoteFragment, true)
                     }
                     .show()
